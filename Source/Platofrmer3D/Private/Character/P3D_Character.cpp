@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogCharacter,All,All)
@@ -20,7 +21,10 @@ AP3D_Character::AP3D_Character()
 	
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	Camera->AttachTo(SpringArm);
-
+	auto PlayerMovement = GetCharacterMovement();
+	PlayerMovement->JumpZVelocity = 1500;
+	PlayerMovement->GravityScale = 4.0f;
+	//PlayerMovement->MaxWalkSpeed = 1200;
 	PrimaryActorTick.bCanEverTick = true;
 
 }
@@ -48,21 +52,38 @@ void AP3D_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("Pitch", this, &AP3D_Character::TurnUp);
 	PlayerInputComponent->BindAxis("Yaw", this, &AP3D_Character::TurnRight);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed,this,&ACharacter::Jump);
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AP3D_Character::Run);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &AP3D_Character::StopRun);
 
 }
 
 void AP3D_Character::WalkForward(float Amount)
 {
-	auto Speed = Velocity * Amount;
-	UE_LOG(LogCharacter, Log, TEXT("%f"), Speed);
-	AddMovementInput(GetActorForwardVector(), Speed);
+	if (isRun)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = RunVelocity;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = Velocity;
+	}
+	AddMovementInput(GetActorForwardVector(), Amount);
+
 }
 
 
 void AP3D_Character::WalkRight(float Amount)
 {
-	auto Speed = Velocity * Amount;
-	AddMovementInput(GetActorRightVector(), Speed);
+	if (isRun)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = RunVelocity;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = Velocity;
+	}
+	AddMovementInput(GetActorRightVector(), Amount);
+
 }
 
 void AP3D_Character::TurnRight(float Amount)
@@ -75,4 +96,15 @@ void AP3D_Character::TurnUp(float Amount)
 	FRotator CurrentRotation = SpringArm->GetRelativeRotation();
 	float NewPitch = FMath::Clamp(CurrentRotation.Pitch + Amount, -80.0f, 80.0f);
 	SpringArm->SetRelativeRotation(FRotator(NewPitch, CurrentRotation.Yaw, CurrentRotation.Roll));
+}
+
+void AP3D_Character::Run()
+{
+	isRun = true;
+	UE_LOG(LogCharacter, Log, TEXT("Run"))
+}
+
+void AP3D_Character::StopRun()
+{
+	isRun = false;
 }

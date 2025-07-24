@@ -30,10 +30,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
 	int32 Velocity = 600;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
+	int32 RunVelocity = 1200;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	bool isRun = false;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -44,4 +46,6 @@ public:
 	void WalkRight(float Amount);
 	void TurnRight(float Amount);
 	void TurnUp(float Amount);
+	void Run();
+	void StopRun();
 };
