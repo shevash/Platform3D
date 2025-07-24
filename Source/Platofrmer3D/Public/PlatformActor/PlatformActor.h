@@ -20,23 +20,35 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* StaticMesh;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category = "ScaleChangeControl")
-	bool xen = true;
+	bool xen_scale = false;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
-	bool yen = true;
+	bool yen_scale = false;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
-	bool zen = true;
+	bool zen_scale = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
+	bool xen_move = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
+	bool yen_move = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
+	bool zen_move = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
+	bool xen_rotate = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
+	bool yen_rotate = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
+	bool zen_rotate = false;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
 	int32 FrequancyScale = 2;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
 	int32 FrequancyRotate = 2;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
 	int32 FrequancyMove = 2;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
-	int32 AmplitudeScale = 2;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
-	int32 AmplitudeRotate = 2;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl")
-	int32 AmplitudeMove = 2;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl", meta = (ClampMin = "0.1", ClampMax = "2"))
+	float AmplitudeScale = 2;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl", meta = (ClampMin = "0.1"))
+	float AmplitudeRotate = 180;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ScaleChangeControl", meta = (ClampMin = "0.1"))
+	float AmplitudeMove = 200;
 
 protected:
 	// Called when the game starts or when spawned
