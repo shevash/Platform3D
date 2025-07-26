@@ -26,6 +26,7 @@ void AP3D_GameMode::BeginPlay()
 void AP3D_GameMode::incrementSeconds()
 {
 	Seconds++;
+	OnIncrementSeconds.Broadcast(Seconds);
 	UE_LOG(LogP3DGameMode, Log, TEXT("%d"), Seconds);
 }
 

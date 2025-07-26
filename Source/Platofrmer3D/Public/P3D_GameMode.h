@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "P3D_GameMode.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnIncrementSecond, int32 Seconds)
 /**
  * 
  */
@@ -15,6 +16,7 @@ class PLATOFRMER3D_API AP3D_GameMode : public AGameModeBase
 	GENERATED_BODY()
 public:
 	AP3D_GameMode();
+	FOnIncrementSecond OnIncrementSeconds;
 private:
 	int32 Seconds = 0;
 
