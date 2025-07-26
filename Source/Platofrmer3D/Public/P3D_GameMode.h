@@ -13,5 +13,15 @@ UCLASS()
 class PLATOFRMER3D_API AP3D_GameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+public:
+	AP3D_GameMode();
+private:
+	int32 Seconds = 0;
+
+public:
+	FTimerHandle ClockTimerHandle;
+	virtual void BeginPlay() override;
+	int32 GetSeconds() { return Seconds; }
+	void incrementSeconds();
+	void FinishLevel();
 };
