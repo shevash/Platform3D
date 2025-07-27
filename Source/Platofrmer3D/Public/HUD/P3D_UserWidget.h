@@ -16,11 +16,14 @@ class PLATOFRMER3D_API UP3D_UserWidget : public UUserWidget
 	
 private:
 	int32 Seconds = 0;
+	int32 Score = 0;
 public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetTime();
 	void UpdateTime(int32 Sec);
-
+	UFUNCTION(BlueprintCallable)
+	int32 GetScore();
+	void UpdateScore(int32 Points);
 
 	virtual void NativeConstruct() override;
 };
