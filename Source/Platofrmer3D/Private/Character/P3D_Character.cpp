@@ -7,6 +7,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "P3D_GameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogCharacter,All,All)
@@ -107,4 +109,11 @@ void AP3D_Character::Run()
 void AP3D_Character::StopRun()
 {
 	isRun = false;
+}
+
+void AP3D_Character::AddPointsToScore(int32 Points)
+{
+	auto GameInstance = Cast<UP3D_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	GameInstance->AddScore(Points);
+	UE_LOG(LogCharacter,Log,TEXT("%d"),GameInstance->GetScore())
 }

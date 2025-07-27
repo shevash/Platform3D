@@ -48,4 +48,6 @@ public:
 	void TurnUp(float Amount);
 	void Run();
 	void StopRun();
+
+	void AddPointsToScore(int32 Points);
 };
