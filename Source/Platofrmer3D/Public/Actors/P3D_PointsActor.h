@@ -8,6 +8,8 @@
 #include "P3D_PointsActor.generated.h"
 
 class UBoxComponent;
+class UStaticMeshComponent;
+class USceneComponent;
 UCLASS()
 class PLATOFRMER3D_API AP3D_PointsActor : public AActor
 {
@@ -17,13 +19,20 @@ public:
 	// Sets default values for this actor's properties
 	AP3D_PointsActor();
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UBoxComponent* BoxCollision;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* StaticMesh;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USceneComponent* SceneComponent;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+
+	FTimerHandle RotateTimer;
+	void RotateMesh();
 	virtual void Tick(float DeltaTime) override;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Score")
 	int32 Points = 10;

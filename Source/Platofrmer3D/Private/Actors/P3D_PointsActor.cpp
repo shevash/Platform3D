@@ -8,10 +8,16 @@ DEFINE_LOG_CATEGORY_STATIC(LogPointActor,All,All)
 // Sets default values
 AP3D_PointsActor::AP3D_PointsActor()
 {
+	SceneComponent = CreateDefaultSubobject<USceneComponent>("SceneComponent");
+	SetRootComponent(SceneComponent);
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
 	BoxCollision->SetBoxExtent(FVector(100.0f, 100.0f, 100.0f));
 	BoxCollision->AttachTo(RootComponent);
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AP3D_PointsActor::OnCharBeginOverlap);
+
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
+	StaticMesh->SetCollisionProfileName(FName("NoCollision"));
+	StaticMesh->AttachTo(RootComponent);
 
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -21,13 +27,19 @@ AP3D_PointsActor::AP3D_PointsActor()
 void AP3D_PointsActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GetWorld()->GetTimerManager().SetTimer(RotateTimer, this, &AP3D_PointsActor::RotateMesh, 0.01f, true);
+}
+
+void AP3D_PointsActor::RotateMesh()
+{
+	StaticMesh->AddLocalRotation(FRotator(0.0f, 1.0f, 0.0f));
 }
 
 // Called every frame
 void AP3D_PointsActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 
 }
 
@@ -37,6 +49,7 @@ void AP3D_PointsActor::OnCharBeginOverlap(UPrimitiveComponent* OverlappedCompone
 	{
 		auto Player = Cast<AP3D_Character>(OtherActor);
 		Player->AddPointsToScore(Points);
+		this->Destroy();
 	}
 }
 
