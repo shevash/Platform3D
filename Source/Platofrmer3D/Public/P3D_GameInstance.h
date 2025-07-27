@@ -16,6 +16,8 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Score = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Seconds = 0;
 
 public:
 	int32 GetScore() { return Score; }

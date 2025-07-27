@@ -8,6 +8,8 @@
 
 int32 UP3D_UserWidget::GetTime()
 {
+	AP3D_GameMode* GameMode = Cast<AP3D_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	Seconds = GameMode->GetTime();
 	return Seconds;
 }
 
@@ -18,6 +20,8 @@ void UP3D_UserWidget::UpdateTime(int32 Sec)
 
 int32 UP3D_UserWidget::GetScore()
 {
+	UP3D_GameInstance* GameInstance = Cast<UP3D_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Score=GameInstance->GetScore();
 	return Score;
 }
 

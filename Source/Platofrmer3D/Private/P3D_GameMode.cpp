@@ -5,6 +5,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "FinishLevelActor/FinishLevelActor.h"
+#include "HUD/P3D_HUD.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogP3DGameMode, All, All)
 AP3D_GameMode::AP3D_GameMode()
@@ -33,6 +34,15 @@ void AP3D_GameMode::incrementSeconds()
 void AP3D_GameMode::FinishLevel()
 {
 	UE_LOG(LogP3DGameMode, Log, TEXT("Finish"));
-	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
-	UKismetSystemLibrary::QuitGame(GetWorld(),PC, EQuitPreference::Quit, true);
+	AP3D_HUD* MyHUD = Cast<AP3D_HUD>(UGameplayStatics::GetPlayerController(this, 0)->GetHUD());
+	GetWorld()->GetTimerManager().ClearTimer(ClockTimerHandle);
+	MyHUD->AddFinishLevelWidgetToViewport();
+	SetPause(UGameplayStatics::GetPlayerController(GetWorld(),0));
+	//APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
+	//UKismetSystemLibrary::QuitGame(GetWorld(),PC, EQuitPreference::Quit, true);
+}
+
+int32 AP3D_GameMode::GetTime()
+{
+	return Seconds;
 }

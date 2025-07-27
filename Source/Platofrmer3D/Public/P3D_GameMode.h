@@ -26,4 +26,5 @@ public:
 	int32 GetSeconds() { return Seconds; }
 	void incrementSeconds();
 	void FinishLevel();
+	int32 GetTime();
 };
