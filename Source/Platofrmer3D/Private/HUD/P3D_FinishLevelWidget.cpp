@@ -13,5 +13,5 @@ void UP3D_FinishLevelWidget::QuitGame()
 
 void UP3D_FinishLevelWidget::NextLevel()
 {
-
+	UGameplayStatics::OpenLevel(this, FName("Level_2"), true);
 }
