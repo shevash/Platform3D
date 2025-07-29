@@ -23,12 +23,16 @@ protected:
 	TSubclassOf<UUserWidget> GameHUDWidgetClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> FinishLevelHUDWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> PauseHUDWidgetClass;
 	UUserWidget* PlayerHUDWidget;
 
 public:
 	virtual void BeginPlay() override;
 	void AddPlayWidgetToViewport();
 	void AddFinishLevelWidgetToViewport();
+	void AddPauseWidgetToViewport();
 
 
 };

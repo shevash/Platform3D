@@ -9,6 +9,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "P3D_GameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "P3D_GameMode.h"
+#include "P3D_PlayerController.h"
+#include "HUD/P3D_HUD.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogCharacter,All,All)
@@ -56,6 +59,7 @@ void AP3D_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Jump", IE_Pressed,this,&ACharacter::Jump);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AP3D_Character::Run);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AP3D_Character::StopRun);
+	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &AP3D_Character::PauseMenu);
 
 }
 
@@ -110,6 +114,28 @@ void AP3D_Character::StopRun()
 {
 	isRun = false;
 }
+
+void AP3D_Character::PauseMenu()
+{
+	
+	auto GameMode = Cast<AP3D_GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	auto PC = Cast<AP3D_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	auto HUD = Cast<AP3D_HUD>(PC->GetHUD());
+	if (GameMode->IsPaused())
+	{
+		GameMode->ClearPause();
+		HUD->AddPlayWidgetToViewport();
+		
+	}
+	else
+	{
+		GameMode->SetPause(PC);
+		HUD->AddPauseWidgetToViewport();
+	}
+
+}
+
+
 
 void AP3D_Character::AddPointsToScore(int32 Points)
 {

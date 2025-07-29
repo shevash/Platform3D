@@ -33,6 +33,16 @@ void AP3D_HUD::AddFinishLevelWidgetToViewport()
 	}
 }
 
+void AP3D_HUD::AddPauseWidgetToViewport()
+{
+	if (PlayerHUDWidget != nullptr)	PlayerHUDWidget->RemoveFromParent();
+	PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PauseHUDWidgetClass);
+	if (PlayerHUDWidget)
+	{
+		PlayerHUDWidget->AddToViewport();
+	}
+}
+
 void AP3D_HUD::DrawHUD()
 {
 	Super::DrawHUD();
