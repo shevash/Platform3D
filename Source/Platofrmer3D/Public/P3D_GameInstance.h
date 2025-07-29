@@ -19,7 +19,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Seconds = 0;
 
+	TArray<FName> Levels = { "Level_1","Level_2","Level_3" };
+	int32 CurrentLevel = 0;
 public:
 	int32 GetScore() { return Score; }
 	void AddScore(int32 Points);
+	int32 GetCurrentLevel() { return CurrentLevel; }
+	void SetCurrentLevel(int32 Index) { CurrentLevel = Index; }
+	int32 GetLevelsNum() { return Levels.Num(); }
+	FName GetLevelName(int32 Index) { return Levels[Index]; }
 };
