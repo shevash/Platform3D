@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Blueprint/UserWidget.h"
 #include "P3D_HUD.generated.h"
 
 /**
@@ -22,6 +23,7 @@ protected:
 	TSubclassOf<UUserWidget> GameHUDWidgetClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> FinishLevelHUDWidgetClass;
+	UUserWidget* PlayerHUDWidget;
 
 public:
 	virtual void BeginPlay() override;
