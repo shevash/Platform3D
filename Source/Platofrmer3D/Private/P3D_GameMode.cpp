@@ -34,10 +34,12 @@ void AP3D_GameMode::incrementSeconds()
 void AP3D_GameMode::FinishLevel()
 {
 	UE_LOG(LogP3DGameMode, Log, TEXT("Finish"));
-	AP3D_HUD* MyHUD = Cast<AP3D_HUD>(UGameplayStatics::GetPlayerController(this, 0)->GetHUD());
+	auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	AP3D_HUD* HUD = Cast<AP3D_HUD>(PC->GetHUD());
 	GetWorld()->GetTimerManager().ClearTimer(ClockTimerHandle);
-	MyHUD->AddFinishLevelWidgetToViewport();
-	SetPause(UGameplayStatics::GetPlayerController(GetWorld(),0));
+	HUD->AddFinishLevelWidgetToViewport();
+	PC->bShowMouseCursor = true;
+	SetPause(PC);
 	//APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
 	//UKismetSystemLibrary::QuitGame(GetWorld(),PC, EQuitPreference::Quit, true);
 }

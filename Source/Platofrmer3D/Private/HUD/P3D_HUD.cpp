@@ -19,7 +19,11 @@ void AP3D_HUD::AddPlayWidgetToViewport()
 	PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), GameHUDWidgetClass);
 	if (PlayerHUDWidget)
 	{
+		auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		PC->bShowMouseCursor = false;
 		PlayerHUDWidget->AddToViewport();
+		FInputModeGameOnly InputMode;
+		PC->SetInputMode(InputMode);
 	}
 }
 
@@ -29,7 +33,13 @@ void AP3D_HUD::AddFinishLevelWidgetToViewport()
 	PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), FinishLevelHUDWidgetClass);
 	if (PlayerHUDWidget)
 	{
+		auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 		PlayerHUDWidget->AddToViewport();
+		PC->bShowMouseCursor = true;
+		FInputModeUIOnly InputMode;
+		InputMode.SetWidgetToFocus(PlayerHUDWidget->TakeWidget());
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		PC->SetInputMode(InputMode);
 	}
 }
 
@@ -39,7 +49,13 @@ void AP3D_HUD::AddPauseWidgetToViewport()
 	PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PauseHUDWidgetClass);
 	if (PlayerHUDWidget)
 	{
+		auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		PC->bShowMouseCursor = true;
 		PlayerHUDWidget->AddToViewport();
+		FInputModeUIOnly InputMode;
+		InputMode.SetWidgetToFocus(PlayerHUDWidget->TakeWidget());
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		PC->SetInputMode(InputMode);
 	}
 }
 

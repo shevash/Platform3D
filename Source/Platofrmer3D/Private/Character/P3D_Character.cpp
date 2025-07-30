@@ -125,7 +125,6 @@ void AP3D_Character::PauseMenu()
 	{
 		GameMode->ClearPause();
 		HUD->AddPlayWidgetToViewport();
-		
 	}
 	else
 	{

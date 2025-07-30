@@ -15,7 +15,6 @@ void UP3D_PauseMenuWidget::ResumeGame()
 	auto HUD = Cast<AP3D_HUD>(PC->GetHUD());
 	HUD->AddPlayWidgetToViewport();
 	GameMode->ClearPause();
-
 }
 
 void UP3D_PauseMenuWidget::QuitGame()
