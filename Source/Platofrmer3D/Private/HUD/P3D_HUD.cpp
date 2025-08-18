@@ -6,15 +6,43 @@
 #include "P3D_GameMode.h"
 #include "HUD/P3D_FinishLevelWidget.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogHUD,All, All)
 void AP3D_HUD::BeginPlay()
 {
 	Super::BeginPlay();
-	AddPlayWidgetToViewport();
+	UE_LOG(LogHUD, Log,TEXT("%s"), *FString(GetWorld()->GetMapName()))
+		if (GetWorld()->GetMapName() == "UEDPIE_0_Menu")
+		{
+			AddMainMenuWidgetToViewport();
+		}
+		else
+		{
+			AddPlayWidgetToViewport();
+		}
+
 	
+}
+
+void AP3D_HUD::AddMainMenuWidgetToViewport()
+{
+	UE_LOG(LogHUD, Log, TEXT("MainMenuWidget"));
+	if (PlayerHUDWidget != nullptr)	PlayerHUDWidget->RemoveFromParent();
+	PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), MainMenuHUDWidgetClass);
+	if (PlayerHUDWidget)
+	{
+		auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		PC->bShowMouseCursor = true;
+		PlayerHUDWidget->AddToViewport();
+		FInputModeUIOnly InputMode;
+		InputMode.SetWidgetToFocus(PlayerHUDWidget->TakeWidget());
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		PC->SetInputMode(InputMode);
+	}
 }
 
 void AP3D_HUD::AddPlayWidgetToViewport()
 {
+	UE_LOG(LogHUD, Log, TEXT("PlayWidget"));
 	if(PlayerHUDWidget != nullptr)	PlayerHUDWidget->RemoveFromParent();
 	PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), GameHUDWidgetClass);
 	if (PlayerHUDWidget)

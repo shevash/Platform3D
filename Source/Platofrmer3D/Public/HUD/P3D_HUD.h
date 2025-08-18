@@ -20,6 +20,8 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> MainMenuHUDWidgetClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> GameHUDWidgetClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> FinishLevelHUDWidgetClass;
@@ -30,6 +32,7 @@ protected:
 
 public:
 	virtual void BeginPlay() override;
+	void AddMainMenuWidgetToViewport();
 	void AddPlayWidgetToViewport();
 	void AddFinishLevelWidgetToViewport();
 	void AddPauseWidgetToViewport();
