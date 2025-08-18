@@ -23,6 +23,23 @@ void AP3D_HUD::BeginPlay()
 	
 }
 
+void AP3D_HUD::AddChooseLevelWidgetToViewport()
+{
+	UE_LOG(LogHUD, Log, TEXT("MainMenuWidget"));
+	if (PlayerHUDWidget != nullptr)	PlayerHUDWidget->RemoveFromParent();
+	PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), ChooseLevelHUDWidgetClass);
+	if (PlayerHUDWidget)
+	{
+		auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		PC->bShowMouseCursor = true;
+		PlayerHUDWidget->AddToViewport();
+		FInputModeUIOnly InputMode;
+		InputMode.SetWidgetToFocus(PlayerHUDWidget->TakeWidget());
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		PC->SetInputMode(InputMode);
+	}
+}
+
 void AP3D_HUD::AddMainMenuWidgetToViewport()
 {
 	UE_LOG(LogHUD, Log, TEXT("MainMenuWidget"));

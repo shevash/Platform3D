@@ -11,7 +11,10 @@
 
 void UP3D_MainMenuWidget::ChooseLevel()
 {
+	auto PC = Cast<AP3D_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
+	auto HUD = Cast<AP3D_HUD>(PC->GetHUD());
+	HUD->AddChooseLevelWidgetToViewport();
 }
 
 void UP3D_MainMenuWidget::NewGame()
