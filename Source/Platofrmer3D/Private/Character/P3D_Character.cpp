@@ -73,7 +73,9 @@ void AP3D_Character::WalkForward(float Amount)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = Velocity;
 	}
-	AddMovementInput(GetActorForwardVector(), Amount);
+	auto direction = Camera->GetForwardVector();
+	//FVector direction = FVector(0.0, SpringArm->GetRelativeRotation().Yaw + 180.0f, 0.0f);
+	AddMovementInput(direction, Amount);
 
 }
 
@@ -88,7 +90,8 @@ void AP3D_Character::WalkRight(float Amount)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = Velocity;
 	}
-	AddMovementInput(GetActorRightVector(), Amount);
+	auto direction = Camera->GetRightVector();
+	AddMovementInput(direction, Amount);
 
 }
 
