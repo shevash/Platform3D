@@ -32,6 +32,8 @@ public:
 	int32 Velocity = 600;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
 	int32 RunVelocity = 1200;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
+	bool isJumping = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,4 +52,5 @@ public:
 	void StopRun();
 	void PauseMenu();
 	void AddPointsToScore(int32 Points);
+	void Jump();
 };

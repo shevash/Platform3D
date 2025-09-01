@@ -56,13 +56,18 @@ void AP3D_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("MoveRight",this, &AP3D_Character::WalkRight);
 	PlayerInputComponent->BindAxis("Pitch", this, &AP3D_Character::TurnUp);
 	PlayerInputComponent->BindAxis("Yaw", this, &AP3D_Character::TurnRight);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed,this,&ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed,this,&AP3D_Character::Jump);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AP3D_Character::Run);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AP3D_Character::StopRun);
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &AP3D_Character::PauseMenu);
 
 }
 
+void AP3D_Character::Jump()
+{
+	isJumping = true;
+	ACharacter::Jump();
+}
 void AP3D_Character::WalkForward(float Amount)
 {
 	if (isRun)
