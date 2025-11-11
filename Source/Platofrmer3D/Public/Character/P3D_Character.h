@@ -6,10 +6,12 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+
 #include "P3D_Character.generated.h"
 
 class USpringArmController;
 class UCameraComponent;
+class UParkourComponent;
 UCLASS()
 class PLATOFRMER3D_API AP3D_Character : public ACharacter
 {
@@ -27,6 +29,9 @@ public:
 	UCameraComponent* Camera;
 	UPROPERTY(EditDefaultsOnly)
 	USpringArmComponent* SpringArm;
+
+	UPROPERTY(EditDefaultsOnly)
+	UParkourComponent* ParkourComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
 	int32 Velocity = 600;

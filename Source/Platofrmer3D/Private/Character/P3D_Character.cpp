@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "P3D_GameInstance.h"
@@ -12,6 +13,7 @@
 #include "P3D_GameMode.h"
 #include "P3D_PlayerController.h"
 #include "HUD/P3D_HUD.h"
+#include "ParkourComponent.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogCharacter,All,All)
@@ -23,21 +25,22 @@ AP3D_Character::AP3D_Character()
 	//SpringArm->bUsePawnControlRotation = true;
 	SpringArm->SocketOffset = FVector(0.0f, 0.0f, 100.0f);
 	SpringArm->AttachTo(GetRootComponent());
-	
+	ParkourComponent = CreateDefaultSubobject<UParkourComponent>("ParkourComponent");
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	Camera->AttachTo(SpringArm);
 	auto PlayerMovement = GetCharacterMovement();
 	PlayerMovement->JumpZVelocity = 1500;
 	PlayerMovement->GravityScale = 4.0f;
+	JumpMaxCount = ParkourComponent->JumpMaxCount;
 	//PlayerMovement->MaxWalkSpeed = 1200;
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
 void AP3D_Character::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 }
 
@@ -66,7 +69,20 @@ void AP3D_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void AP3D_Character::Jump()
 {
 	isJumping = true;
-	ACharacter::Jump();
+	if (ParkourComponent->CanDoubleJump() && GetCharacterMovement()->IsFalling())
+	{
+		UE_LOG(LogCharacter, Log, TEXT("DoubleJump"))
+		ACharacter::Jump();
+		ParkourComponent->IncrementJumpCount();
+		return;
+	}
+	if (JumpCurrentCount == 0)
+	{
+		UE_LOG(LogCharacter, Log, TEXT("Jump"))
+			ParkourComponent->ResetJumpCount();
+		ACharacter::Jump();
+	}
+
 }
 void AP3D_Character::WalkForward(float Amount)
 {
