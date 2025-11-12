@@ -55,8 +55,7 @@ void UParkourComponent::OnWallJumpSphereBeginOverlap(UPrimitiveComponent* Overla
 {
 	UE_LOG(LogParkourComponent, Log, TEXT("OverlapBegin"))
 
-			bDoubleJumpPossible = JumpMaxCount > JumpCount;
-
+		bDoubleJumpPossible = JumpMaxCount > JumpCount;
 
 }
 
@@ -67,5 +66,12 @@ void UParkourComponent::OnWallJumpSphereEndOverlap(UPrimitiveComponent* Overlapp
 		bDoubleJumpPossible = false;
 
 
+
+}
+
+void UParkourComponent::ResetJump()
+{
+	JumpCount = 0;
+	bDoubleJumpPossible = true;
 }
 

@@ -22,12 +22,12 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	int32 DoubleJumpCount = 1;
 	UPROPERTY(EditDefaultsOnly)
-	int32 JumpMaxCount = 2;
+	int32 JumpMaxCount = 99999;
 
 	int32 JumpCount = 0;
-private:
-
 	bool bDoubleJumpPossible = false;
+
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -43,5 +43,5 @@ public:
 	void OnWallJumpSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	bool CanDoubleJump() { return bDoubleJumpPossible; }
 	void IncrementJumpCount() { JumpCount++; }
-	void ResetJumpCount() { JumpCount = 0; }
+	void ResetJump();
 };

@@ -70,7 +70,7 @@ void AP3D_Character::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 
-	ParkourComponent->ResetJumpCount();
+	ParkourComponent->ResetJump();
 	UE_LOG(LogCharacter, Log, TEXT("Landed"))
 }
 
@@ -81,7 +81,9 @@ void AP3D_Character::Jump()
 	{
 		UE_LOG(LogCharacter, Log, TEXT("DoubleJump"))
 		ACharacter::Jump();
+		ParkourComponent->WallJump();
 		ParkourComponent->IncrementJumpCount();
+		ParkourComponent->bDoubleJumpPossible = false;
 		return;
 	}
 	if (JumpCurrentCount == 0)
