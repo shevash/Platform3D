@@ -66,6 +66,14 @@ void AP3D_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+void AP3D_Character::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	ParkourComponent->ResetJumpCount();
+	UE_LOG(LogCharacter, Log, TEXT("Landed"))
+}
+
 void AP3D_Character::Jump()
 {
 	isJumping = true;
@@ -79,9 +87,9 @@ void AP3D_Character::Jump()
 	if (JumpCurrentCount == 0)
 	{
 		UE_LOG(LogCharacter, Log, TEXT("Jump"))
-			ParkourComponent->ResetJumpCount();
 		ACharacter::Jump();
 	}
+
 
 }
 void AP3D_Character::WalkForward(float Amount)

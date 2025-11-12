@@ -39,7 +39,8 @@ public:
 
 	UFUNCTION()
 	void OnWallJumpSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
+	UFUNCTION()
+	void OnWallJumpSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	bool CanDoubleJump() { return bDoubleJumpPossible; }
 	void IncrementJumpCount() { JumpCount++; }
 	void ResetJumpCount() { JumpCount = 0; }

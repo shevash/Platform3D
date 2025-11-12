@@ -22,6 +22,7 @@ UParkourComponent::UParkourComponent()
 	WallJumpSphereComponent->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 
 	WallJumpSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &UParkourComponent::OnWallJumpSphereBeginOverlap);
+	WallJumpSphereComponent->OnComponentEndOverlap.AddDynamic(this, &UParkourComponent::OnWallJumpSphereEndOverlap);
 	// ...
 }
 
@@ -52,10 +53,19 @@ void UParkourComponent::WallJump()
 
 void UParkourComponent::OnWallJumpSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogParkourComponent, Log, TEXT("Overlap"))
-		if (JumpCount < DoubleJumpCount) {
-			bDoubleJumpPossible = true;
-		}
+	UE_LOG(LogParkourComponent, Log, TEXT("OverlapBegin"))
+
+			bDoubleJumpPossible = JumpMaxCount > JumpCount;
+
+
+}
+
+void UParkourComponent::OnWallJumpSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	UE_LOG(LogParkourComponent, Log, TEXT("OverlapEnd"))
+
+		bDoubleJumpPossible = false;
+
 
 }
 
