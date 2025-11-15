@@ -2,6 +2,9 @@
 
 
 #include "ParkourComponent.h"
+#include "GameFramework/Character.h"
+#include "Character/P3D_Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogParkourComponent, All, All);
@@ -48,14 +51,31 @@ void UParkourComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UParkourComponent::WallJump()
 {
-
+	auto Player = Cast<AP3D_Character>(GetOwner());
+	
+	if (CanDoubleJump() && Player->GetCharacterMovement()->IsFalling())
+	{
+		
+		UE_LOG(LogParkourComponent, Log, TEXT("DoubleJump"))
+		Player->ACharacter::Jump();
+		IncrementJumpCount();
+		bDoubleJumpPossible = false;
+		return;
+	}
+	if (Player->JumpCurrentCount == 0)
+	{
+		UE_LOG(LogParkourComponent, Log, TEXT("Jump"))
+		Player->ACharacter::Jump();
+		
+	}
 }
 
 void UParkourComponent::OnWallJumpSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogParkourComponent, Log, TEXT("OverlapBegin"))
 
-		bDoubleJumpPossible = JumpMaxCount > JumpCount;
+	bDoubleJumpPossible = JumpMaxCount > JumpCount;
+	bNearWall = true;
 
 }
 
@@ -63,8 +83,8 @@ void UParkourComponent::OnWallJumpSphereEndOverlap(UPrimitiveComponent* Overlapp
 {
 	UE_LOG(LogParkourComponent, Log, TEXT("OverlapEnd"))
 
-		bDoubleJumpPossible = false;
-
+	bDoubleJumpPossible = false;
+	bNearWall = false;
 
 
 }
@@ -72,6 +92,7 @@ void UParkourComponent::OnWallJumpSphereEndOverlap(UPrimitiveComponent* Overlapp
 void UParkourComponent::ResetJump()
 {
 	JumpCount = 0;
-	bDoubleJumpPossible = true;
+	bDoubleJumpPossible = bNearWall;
+
 }
 

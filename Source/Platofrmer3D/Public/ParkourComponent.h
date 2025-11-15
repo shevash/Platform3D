@@ -26,6 +26,7 @@ public:
 
 	int32 JumpCount = 0;
 	bool bDoubleJumpPossible = false;
+	bool bNearWall = false;
 
 	
 protected:

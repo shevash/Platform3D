@@ -77,20 +77,8 @@ void AP3D_Character::Landed(const FHitResult& Hit)
 void AP3D_Character::Jump()
 {
 	isJumping = true;
-	if (ParkourComponent->CanDoubleJump() && GetCharacterMovement()->IsFalling())
-	{
-		UE_LOG(LogCharacter, Log, TEXT("DoubleJump"))
-		ACharacter::Jump();
-		ParkourComponent->WallJump();
-		ParkourComponent->IncrementJumpCount();
-		ParkourComponent->bDoubleJumpPossible = false;
-		return;
-	}
-	if (JumpCurrentCount == 0)
-	{
-		UE_LOG(LogCharacter, Log, TEXT("Jump"))
-		ACharacter::Jump();
-	}
+	ParkourComponent->WallJump();
+	
 
 
 }
