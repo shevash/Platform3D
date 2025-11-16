@@ -9,6 +9,13 @@
 #include "P3D_PlayerController.h"
 #include "P3D_GameInstance.h"
 
+
+void UP3D_MainMenuWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	bIsFocusable = true;
+}
+
 void UP3D_MainMenuWidget::ChooseLevel()
 {
 	auto PC = Cast<AP3D_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));

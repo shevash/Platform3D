@@ -15,6 +15,7 @@ class PLATOFRMER3D_API UP3D_MainMenuWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	virtual void NativeConstruct() override;
 	UFUNCTION(BlueprintCallable)
 	void ChooseLevel();
 	UFUNCTION(BlueprintCallable)
