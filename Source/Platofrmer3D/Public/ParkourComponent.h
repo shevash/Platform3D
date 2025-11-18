@@ -34,7 +34,9 @@ public:
 	bool bNearWall = false;
 	bool bPermitToClimb = false;
 	bool bDeniedToClimb = false;
-	
+	bool bHoldingOn = false;
+	AActor* PermitActor = nullptr;
+	AActor* DeniedActor = nullptr;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -64,4 +66,5 @@ public:
 	void IncrementJumpCount() { JumpCount++; }
 	void ResetJump();
 	void ClimbUp();
+	void HoldOnLedge();
 };

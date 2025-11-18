@@ -88,6 +88,7 @@ void AP3D_Character::Jump()
 }
 void AP3D_Character::WalkForward(float Amount)
 {
+	if (bFlying) return;
 	if (isRun)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = RunVelocity;

@@ -39,6 +39,7 @@ public:
 	int32 RunVelocity = 1200;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
 	bool isJumping = false;
+	bool bFlying = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

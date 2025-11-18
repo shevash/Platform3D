@@ -41,15 +41,14 @@ void UParkourComponent::BeginPlay()
 	WallJumpSphereComponent->bHiddenInGame = false;
 	WallJumpSphereComponent->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	WallJumpSphereComponent->RegisterComponentWithWorld(GetOwner()->GetWorld());
-	
 	WallJumpSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &UParkourComponent::OnWallJumpSphereBeginOverlap);
 	WallJumpSphereComponent->OnComponentEndOverlap.AddDynamic(this, &UParkourComponent::OnWallJumpSphereEndOverlap);
 
 
 	WallClimbPermitBoxComponent = NewObject<UBoxComponent>(GetOwner(),"WallClimbPermitBoxComponent");
 	GetOwner()->AddInstanceComponent(WallClimbPermitBoxComponent);
-	WallClimbPermitBoxComponent->SetRelativeLocation(FVector(50.0f, 0.0f, 80.0f));
-	WallClimbPermitBoxComponent->SetBoxExtent(FVector(25.0f, 25.0f, 32.0f));
+	WallClimbPermitBoxComponent->SetRelativeLocation(FVector(60.0f, 0.0f, 80.0f));
+	WallClimbPermitBoxComponent->SetBoxExtent(FVector(40.0f, 25.0f, 32.0f));
 	WallClimbPermitBoxComponent->SetGenerateOverlapEvents(true);
 	WallClimbPermitBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	WallClimbPermitBoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -65,7 +64,7 @@ void UParkourComponent::BeginPlay()
 	WallClimbDeniedBoxComponent = NewObject<UBoxComponent>(GetOwner(), "WallClimbDeniedBoxComponent");
 	GetOwner()->AddInstanceComponent(WallClimbDeniedBoxComponent);
 	WallClimbDeniedBoxComponent->SetRelativeLocation(FVector(50.0f, 0.0f, 120.0f));
-	WallClimbDeniedBoxComponent->SetBoxExtent(FVector(25.0f, 25.0f, 5.0f));
+	WallClimbDeniedBoxComponent->SetBoxExtent(FVector(60.0f, 50.0f, 5.0f));
 	WallClimbDeniedBoxComponent->SetGenerateOverlapEvents(true);
 	WallClimbDeniedBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	WallClimbDeniedBoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -76,11 +75,6 @@ void UParkourComponent::BeginPlay()
 	WallClimbDeniedBoxComponent->RegisterComponentWithWorld(GetOwner()->GetWorld());
 	WallClimbDeniedBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &UParkourComponent::OnWallClimbDeniedBoxBeginOverlap);
 	WallClimbDeniedBoxComponent->OnComponentEndOverlap.AddDynamic(this, &UParkourComponent::OnWallClimbDeniedBoxEndOverlap);
-
-
-
-	
-	
 }
 
 
@@ -94,7 +88,18 @@ void UParkourComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UParkourComponent::WallJump()
 {
+	
 	auto Player = Cast<AP3D_Character>(GetOwner());
+	if (bHoldingOn == true)
+	{
+		Player->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+		Player->bFlying = false;
+		bHoldingOn = false;
+		Player->SetActorLocation((Player->GetActorLocation() + Player->GetActorForwardVector()*200) + FVector(0.0f, 0.0f, 300.0f));
+		return;
+	}
+
 	if (bPermitToClimb && !bDeniedToClimb)
 	{
 		ClimbUp();
@@ -143,25 +148,32 @@ void UParkourComponent::OnWallJumpSphereEndOverlap(UPrimitiveComponent* Overlapp
 void UParkourComponent::OnWallClimbPermitBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogParkourComponent, Log, TEXT("PermitOverlapBegin"))
-		bPermitToClimb = true;
+	bPermitToClimb = true;
+	auto Player = Cast<AP3D_Character>(GetOwner());
+	PermitActor = OtherActor;
+	if (Player->GetCharacterMovement()->IsFalling()) HoldOnLedge();
 }
+
 
 void UParkourComponent::OnWallClimbPermitBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOG(LogParkourComponent, Log, TEXT("PermitOverlapEnd"))
 		bPermitToClimb = false;
+	PermitActor = nullptr;
 }
 
 void UParkourComponent::OnWallClimbDeniedBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogParkourComponent, Log, TEXT("DeniedOverlapBegin"))
-		bDeniedToClimb = true;
+	bDeniedToClimb = true;
+	DeniedActor = OtherActor;
 }
 
 void UParkourComponent::OnWallClimbDeniedBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOG(LogParkourComponent, Log, TEXT("DeniedOverlapEnd"))
-		bDeniedToClimb = false;
+	bDeniedToClimb = false;
+	DeniedActor = nullptr;
 }
 
 void UParkourComponent::ResetJump()
@@ -169,10 +181,27 @@ void UParkourComponent::ResetJump()
 	check(this)
 	JumpCount = 0;
 	bDoubleJumpPossible = bNearWall;
+	WallClimbPermitBoxComponent->SetGenerateOverlapEvents(true);
+	WallClimbDeniedBoxComponent->SetGenerateOverlapEvents(true);
 }
 
 void UParkourComponent::ClimbUp()
 {
 	UE_LOG(LogParkourComponent, Log, TEXT("ClimbUp"))
+		
+}
+
+void UParkourComponent::HoldOnLedge()
+{
+	if (bDeniedToClimb) return;
+	auto Player = Cast<AP3D_Character>(GetOwner());
+	Player->GetCharacterMovement()->DisableMovement();
+	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
+	Player->bFlying = true;
+	WallClimbPermitBoxComponent->SetGenerateOverlapEvents(false);
+	WallClimbDeniedBoxComponent->SetGenerateOverlapEvents(false);
+	bHoldingOn = true;
+	Player->AttachToActor(PermitActor, FAttachmentTransformRules::KeepWorldTransform);
+	UE_LOG(LogParkourComponent, Log, TEXT("HoldOnLedge"))
 }
 
