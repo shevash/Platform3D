@@ -37,6 +37,7 @@ public:
 	bool bHoldingOn = false;
 	AActor* PermitActor = nullptr;
 	AActor* DeniedActor = nullptr;
+	FHitResult WallClimbPermitBoxHitResult;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -67,4 +68,5 @@ public:
 	void ResetJump();
 	void ClimbUp();
 	void HoldOnLedge();
+	void HoldingOnCharacterPosition();
 };

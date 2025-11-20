@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
+#include "DrawDebugHelpers.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogParkourComponent, All, All);
 // Sets default values for this component's properties
@@ -64,7 +65,7 @@ void UParkourComponent::BeginPlay()
 	WallClimbDeniedBoxComponent = NewObject<UBoxComponent>(GetOwner(), "WallClimbDeniedBoxComponent");
 	GetOwner()->AddInstanceComponent(WallClimbDeniedBoxComponent);
 	WallClimbDeniedBoxComponent->SetRelativeLocation(FVector(50.0f, 0.0f, 120.0f));
-	WallClimbDeniedBoxComponent->SetBoxExtent(FVector(60.0f, 50.0f, 5.0f));
+	WallClimbDeniedBoxComponent->SetBoxExtent(FVector(100.0f, 100.0f, 5.0f));
 	WallClimbDeniedBoxComponent->SetGenerateOverlapEvents(true);
 	WallClimbDeniedBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	WallClimbDeniedBoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -152,6 +153,8 @@ void UParkourComponent::OnWallClimbPermitBoxBeginOverlap(UPrimitiveComponent* Ov
 	auto Player = Cast<AP3D_Character>(GetOwner());
 	PermitActor = OtherActor;
 	if (Player->GetCharacterMovement()->IsFalling()) HoldOnLedge();
+	WallClimbPermitBoxHitResult = SweepResult;
+
 }
 
 
@@ -196,12 +199,56 @@ void UParkourComponent::HoldOnLedge()
 	if (bDeniedToClimb) return;
 	auto Player = Cast<AP3D_Character>(GetOwner());
 	Player->GetCharacterMovement()->DisableMovement();
-	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
+	//Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
 	Player->bFlying = true;
 	WallClimbPermitBoxComponent->SetGenerateOverlapEvents(false);
 	WallClimbDeniedBoxComponent->SetGenerateOverlapEvents(false);
 	bHoldingOn = true;
 	Player->AttachToActor(PermitActor, FAttachmentTransformRules::KeepWorldTransform);
 	UE_LOG(LogParkourComponent, Log, TEXT("HoldOnLedge"))
+		HoldingOnCharacterPosition();
+}
+
+void UParkourComponent::HoldingOnCharacterPosition()
+{
+	auto Player = Cast<AP3D_Character>(GetOwner());
+	auto ForwardLineStart = Player->GetActorLocation()+Player->GetActorForwardVector()*30;
+	auto ForwardLineEnd = Player->GetActorLocation()+Player->GetActorForwardVector()*500;
+	auto LeftLineStart = Player->GetActorLocation();
+	auto LeftLineEnd = Player->GetActorLocation() - Player->GetActorRightVector() *  500;
+	auto RightLineStart = Player->GetActorLocation();
+	auto RightLineEnd = Player->GetActorLocation() + Player->GetActorRightVector() * 500;
+	auto UpLineStart = Player->GetActorLocation()+Player->GetActorForwardVector()*100 + FVector(0.0, 0.0, 500.0);
+	auto UpLineEnd = Player->GetActorLocation() + Player->GetActorForwardVector() * 100;
+
+	FHitResult ForwardLineResult;
+	FHitResult LeftLineResult;
+	FHitResult RightLineResult;
+	FHitResult UpLineResult;
+
+	GetWorld()->LineTraceSingleByChannel(ForwardLineResult, ForwardLineStart, ForwardLineEnd, ECollisionChannel::ECC_Visibility);
+	GetWorld()->LineTraceSingleByChannel(LeftLineResult, LeftLineStart, LeftLineEnd, ECollisionChannel::ECC_WorldDynamic);
+	GetWorld()->LineTraceSingleByChannel(RightLineResult, RightLineStart, RightLineEnd, ECollisionChannel::ECC_WorldDynamic);
+
+	
+	DrawDebugLine(GetWorld(), ForwardLineStart, ForwardLineEnd, FColor::Red, false, 5,0,3);
+	DrawDebugSphere(GetWorld(), ForwardLineResult.ImpactPoint, 5, 8, FColor::Red, false, 5, 0, 3);
+
+
+	FVector DesiredNormal = -ForwardLineResult.Normal;
+	FRotator NewRotation = DesiredNormal.Rotation();
+	NewRotation.Pitch = 0.f;
+	NewRotation.Roll = 0.f;
+	Player->SetActorRotation(NewRotation);
+	Player->SetActorLocation(ForwardLineResult.ImpactPoint+ ForwardLineResult.Normal *30);
+	GetWorld()->LineTraceSingleByChannel(UpLineResult, UpLineStart, UpLineEnd, ECollisionChannel::ECC_Visibility);
+	DrawDebugLine(GetWorld(), UpLineStart, UpLineEnd, FColor::Red, false, 5, 0, 3);
+	DrawDebugSphere(GetWorld(), UpLineResult.ImpactPoint, 5, 8, FColor::Red, false, 5, 0, 3);
+
+	//Player->SetActorLocation(FVector(Player->GetActorLocation().X, Player->GetActorLocation().Y, UpLineResult.ImpactPoint.Z));
+	//UE_LOG(LogParkourComponent, Log, TEXT("%s"), ToString(ForwardLineResult.ImpactPoint))
+
+
+
 }
 
